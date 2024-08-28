@@ -34,16 +34,23 @@ RUN code-server --install-extension hashicorp.terraform
 RUN code-server --install-extension mongodb.mongodb-vscode
 
 # Install apt packages:
+RUN apt-get update --fix-missing
 RUN sudo apt-get install -y make
+RUN apt-get install -y curl
+RUN apt-get install -y build-essential libssl-dev
+RUN apt-get install wget
 
 # Setup shell w/ powerline10k theme, no zsh plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)"
 
 # Setup NVM
-SHELL ["/bin/bash", "--login", "-c"]
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION --lts
+RUN mkdir -p /usr/local/nvm
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-RUN source /home/coder/.bashrc
-RUN nvm install --lts
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
+ENV PATH $NODE_PATH:$PATH
 
 # Copy files: 
 # COPY deploy-container/myTool /home/coder/myTool
