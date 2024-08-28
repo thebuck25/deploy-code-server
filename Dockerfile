@@ -34,11 +34,11 @@ RUN code-server --install-extension hashicorp.terraform
 RUN code-server --install-extension mongodb.mongodb-vscode
 
 # Install apt packages:
-RUN apt-get update --fix-missing
+RUN sudo apt-get update --fix-missing
 RUN sudo apt-get install -y make
-RUN apt-get install -y curl
-RUN apt-get install -y build-essential libssl-dev
-RUN apt-get install wget
+RUN sudo apt-get install -y curl
+RUN sudo apt-get install -y build-essential libssl-dev
+RUN sudo apt-get install wget
 
 # Setup shell w/ powerline10k theme, no zsh plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)"
