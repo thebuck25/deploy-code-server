@@ -33,12 +33,14 @@ RUN code-server --install-extension ms-azuretools.vscode-docker
 RUN code-server --install-extension hashicorp.terraform
 RUN code-server --install-extension mongodb.mongodb-vscode
 
-
 # Install apt packages:
 RUN sudo apt-get install -y ubuntu-make
 
-SHELL ["/bin/bash", "--login", "-c"]
+# Setup shell w/ powerline10k theme, no zsh plugins installed
+RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)"
 
+# Setup NVM
+SHELL ["/bin/bash", "--login", "-c"]
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 RUN nvm install --lts
 
