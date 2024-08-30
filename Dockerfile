@@ -28,7 +28,6 @@ RUN code-server --install-extension esbenp.prettier-vscode
 RUN code-server --install-extension ms-vscode.vscode-typescript-next
 RUN code-server --install-extension ms-vscode.azure-account
 RUN code-server --install-extension ms-azuretools.vscode-azurefunctions
-RUN code-server --install-extension ms-azuretools.vscode-azureresourcegroups
 RUN code-server --install-extension ms-azuretools.vscode-docker
 RUN code-server --install-extension hashicorp.terraform
 RUN code-server --install-extension mongodb.mongodb-vscode
@@ -41,6 +40,7 @@ RUN code-server --install-extension snowflake.snowflake-vsc
 RUN code-server --install-extension okeeffdp.snowflake-vscode
 RUN code-server --install-extension TeamsDevApp.ms-teams-vscode-extension
 RUN code-server --install-extension redhat.vscode-yaml
+RUN code-server --install-extension RandomFractalsInc.duckdb-sql-tools
 
 # Install apt packages:
 RUN sudo apt-get update --fix-missing
@@ -66,7 +66,7 @@ ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
 
 # Fetch the latest Geist font release
-RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/releases/latest | grep "browser_download_url" | grep ".zip" | cut -d '"' -f 4) \
+RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/releases/latest | grep "browser_download_url" | grep ".zip" | cut -d '"' -f 4 | grep Mono) \
     && wget -O geist-font.zip $LATEST_RELEASE_URL
 
 # Unzip the downloaded file
