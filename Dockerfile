@@ -24,6 +24,9 @@ RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
 # Install VS Code extensions:
 # Note: we use a different marketplace than VS Code. See https://github.com/cdr/code-server/blob/main/docs/FAQ.md#differences-compared-to-vs-code
+# First copy any manually installed extensions to docker
+
+#Registry install
 RUN code-server --install-extension esbenp.prettier-vscode
 RUN code-server --install-extension ms-vscode.vscode-typescript-next
 RUN code-server --install-extension ms-vscode.azure-account
@@ -36,11 +39,15 @@ RUN code-server --install-extension github.github-vscode-theme
 RUN code-server --install-extension GitHub.vscode-pull-request-github
 RUN code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
 RUN code-server --install-extension shd101wyy.markdown-preview-enhanced
-RUN code-server --install-extension snowflake.snowflake-vsc
-RUN code-server --install-extension okeeffdp.snowflake-vscode
-RUN code-server --install-extension TeamsDevApp.ms-teams-vscode-extension
-RUN code-server --install-extension redhat.vscode-yaml
-RUN code-server --install-extension RandomFractalsInc.duckdb-sql-tools
+
+#Manual install
+ENV EXTENSIONS_DIR=.local/share/code-server/extensions
+RUN mkdir -p ${EXTENSIONS_DIR}
+# Copy all .vsix files from the "extensions" folder on your local machine to the Docker image
+COPY ./extensions/*.vsix ${EXTENSIONS_DIR}/
+RUN for ext in ${EXTENSIONS_DIR}/*.vsix; do \
+    code-server --install-extension $ext; \
+done
 
 # Install apt packages:
 RUN sudo apt-get update --fix-missing
@@ -74,8 +81,8 @@ RUN unzip geist-font.zip -d geist-font
 
 # Install the fonts to the system fonts directory
 RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font \
-    && sudo mv geist-font/statics-ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
-    && sudo mv geist-font/variable-ttf/*.ttf /usr/share/fonts/truetype/geist-font/
+    && sudo mv geist-font/GeistMono-1.3.0/statics-ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
+    && sudo mv geist-font/GeistMono-1.3.0/variable-ttf/*.ttf /usr/share/fonts/truetype/geist-font/
 
 # Update the font cache
 RUN sudo fc-cache -fv
