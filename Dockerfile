@@ -52,7 +52,8 @@ RUN sudo apt-get install -y inotify-tools
 
 # Setup shell w/ powerline10k theme, no zsh plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)"
-RUN chsh -s $(which zsh)
+# Change the default shell for "coder" to zsh
+RUN ZSH_PATH=$(which zsh) && sudo sed -i "s|/bin/bash|${ZSH_PATH}|" /etc/passwd
 
 # Setup NVM
 ENV NVM_DIR /usr/local/nvm
