@@ -92,13 +92,14 @@ else
 fi
 
 # Start continuous sync in the background when auto_push is true
-if [[ ! -z "${RCLONE_DATA}" && "${RCLONE_AUTO_PUSH}" == "true" ]]; then
-    inotifywait -m -r -e modify,create,delete,move $RCLONE_SOURCE_PATH |
-    while read -r directory events filename; do
-        echo "Change detected: $events in $directory$filename"
-        rclone sync $RCLONE_REMOTE_PATH $RCLONE_SOURCE_PATH $RCLONE_FLAGS
-    done &
-fi
+# Note this seems to be crashing railway
+# if [[ ! -z "${RCLONE_DATA}" && "${RCLONE_AUTO_PUSH}" == "true" ]]; then
+#     inotifywait -m -r -e modify,create,delete,move $RCLONE_SOURCE_PATH |
+#     while read -r directory events filename; do
+#         echo "Change detected: $events in $directory$filename"
+#         rclone sync $RCLONE_REMOTE_PATH $RCLONE_SOURCE_PATH $RCLONE_FLAGS
+#     done &
+# fi
 
 # Add dotfiles, if set
 if [ -n "$DOTFILES_REPO" ]; then
