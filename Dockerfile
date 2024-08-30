@@ -74,7 +74,8 @@ RUN unzip geist-font.zip -d geist-font
 
 # Install the fonts to the system fonts directory
 RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font \
-    && sudo mv geist-font/*.ttf /usr/share/fonts/truetype/geist-font/
+    && sudo mv geist-font/statics-ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
+    && sudo mv geist-font/variable-ttf/*.ttf /usr/share/fonts/truetype/geist-font/
 
 # Update the font cache
 RUN sudo fc-cache -fv
