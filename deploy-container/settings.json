@@ -1,8 +1,13 @@
 {
-  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorTheme": "GitHub Dark Default",
   "git.postCommitCommand": "sync",
   "git.enableSmartCommit": true,
   "git.confirmSync": false,
   "git.autofetch": true,
-  "editor.fontFamily": "GeistMono-Regular, Menlo, Monaco, 'Courier New', monospace"
+  "editor.fontFamily": "'Geist Mono', Menlo, Monaco, 'Courier New', monospace",
+  "terminal.integrated.fontFamily": "MesloLGS NF",
+  "terminal.integrated.fontWeightBold": "bold",
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.fontWeight": "normal",
+  "terminal.integrated.defaultProfile.linux": "zsh"
 }

@@ -31,14 +31,13 @@ RUN code-server --install-extension esbenp.prettier-vscode
 RUN code-server --install-extension ms-vscode.vscode-typescript-next
 RUN code-server --install-extension ms-vscode.azure-account
 RUN code-server --install-extension ms-azuretools.vscode-azurefunctions
-RUN code-server --install-extension ms-azuretools.vscode-docker
 RUN code-server --install-extension hashicorp.terraform
-RUN code-server --install-extension mongodb.mongodb-vscode
+#RUN code-server --install-extension mongodb.mongodb-vscode
 RUN code-server --install-extension GitHub.vscode-github-actions
 RUN code-server --install-extension github.github-vscode-theme
 RUN code-server --install-extension GitHub.vscode-pull-request-github
-RUN code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
-RUN code-server --install-extension shd101wyy.markdown-preview-enhanced
+#RUN code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
+#RUN code-server --install-extension shd101wyy.markdown-preview-enhanced
 
 #Manual install
 ENV EXTENSIONS_DIR=.local/share/code-server/extensions
