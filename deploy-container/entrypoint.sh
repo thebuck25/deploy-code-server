@@ -8,7 +8,24 @@ mkdir -p $START_DIR
 
 # function to clone the git repo or add a user's first file if no repo was specified.
 project_init () {
-    [ -z "${GIT_REPO}" ] && echo "[$PREFIX] No GIT_REPO specified" && echo "Example file. Have questions? Join us at https://community.coder.com" > $START_DIR/coder.txt || git clone $GIT_REPO $START_DIR
+    if [ -z "${GIT_REPOS}" ]; then
+        echo "[$PREFIX] No GIT_REPOS specified. Creating a default file."
+        echo "Example file. Have questions? Join us at https://community.coder.com" > $START_DIR/coder.txt
+    else
+        IFS=' ' read -r -a repos <<< "${GIT_REPOS}"
+        for repo in "${repos[@]}"; do
+            # Check if GITHUB_PAT is set and use it in the repo URL if available
+            if [ -n "${GITHUB_PAT}" ]; then
+                repo_url=$(echo "$repo" | sed "s#https://#https://$GITHUB_PAT@#")
+            else
+                repo_url="$repo"
+            fi
+            repo_name=$(basename -s .git "$repo_url")
+            target_dir="$START_DIR/$repo_name"
+            echo "[$PREFIX] Cloning $repo_url into $target_dir"
+            git clone "$repo_url" "$target_dir"
+        done
+    fi
 }
 
 # add rclone config and start rclone, if supplied
@@ -39,8 +56,6 @@ else
         # user specified they don't want to apply the tasks
         echo "[$PREFIX] Skipping VS Code tasks for rclone"
     fi
-
-
 
     # Full path to the remote filesystem
     RCLONE_REMOTE_PATH=${RCLONE_REMOTE_NAME:-code-server-remote}:${RCLONE_DESTINATION:-code-server-files}
@@ -74,6 +89,15 @@ else
 
     fi
 
+fi
+
+# Start continuous sync in the background when auto_push is true
+if [[ ! -z "${RCLONE_DATA}" && "${RCLONE_AUTO_PUSH}" == "true" ]]; then
+    inotifywait -m -r -e modify,create,delete,move $RCLONE_SOURCE_PATH |
+    while read -r directory events filename; do
+        echo "Change detected: $events in $directory$filename"
+        rclone sync $RCLONE_REMOTE_PATH $RCLONE_SOURCE_PATH $RCLONE_FLAGS
+    done &
 fi
 
 # Add dotfiles, if set

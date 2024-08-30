@@ -19,10 +19,10 @@ COPY deploy-container/rclone-tasks.json /tmp/rclone-tasks.json
 # Fix permissions for code-server
 RUN sudo chown -R coder:coder /home/coder/.local
 
-# You can add custom software and dependencies for your environment below
-# -----------
+# Install AzCLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-# Install a VS Code extension:
+# Install VS Code extensions:
 # Note: we use a different marketplace than VS Code. See https://github.com/cdr/code-server/blob/main/docs/FAQ.md#differences-compared-to-vs-code
 RUN code-server --install-extension esbenp.prettier-vscode
 RUN code-server --install-extension ms-vscode.vscode-typescript-next
@@ -32,16 +32,27 @@ RUN code-server --install-extension ms-azuretools.vscode-azureresourcegroups
 RUN code-server --install-extension ms-azuretools.vscode-docker
 RUN code-server --install-extension hashicorp.terraform
 RUN code-server --install-extension mongodb.mongodb-vscode
+RUN code-server --install-extension GitHub.vscode-github-actions
+RUN code-server --install-extension github.github-vscode-theme
+RUN code-server --install-extension GitHub.vscode-pull-request-github
+RUN code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
+RUN code-server --install-extension shd101wyy.markdown-preview-enhanced
+RUN code-server --install-extension snowflake.snowflake-vsc
+RUN code-server --install-extension okeeffdp.snowflake-vscode
+RUN code-server --install-extension TeamsDevApp.ms-teams-vscode-extension
+RUN code-server --install-extension redhat.vscode-yaml
 
 # Install apt packages:
 RUN sudo apt-get update --fix-missing
 RUN sudo apt-get install -y make
 RUN sudo apt-get install -y curl
 RUN sudo apt-get install -y build-essential libssl-dev
-RUN sudo apt-get install wget
+RUN sudo apt-get install -y wget unzip fontconfig
+RUN sudo apt-get install -y inotify-tools
 
 # Setup shell w/ powerline10k theme, no zsh plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)"
+RUN chsh -s $(which zsh)
 
 # Setup NVM
 ENV NVM_DIR /usr/local/nvm
@@ -53,12 +64,28 @@ RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
 
+# Fetch the latest Geist font release
+RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/releases/latest | grep "browser_download_url" | grep ".zip" | cut -d '"' -f 4) \
+    && wget -O geist-font.zip $LATEST_RELEASE_URL
+
+# Unzip the downloaded file
+RUN unzip geist-font.zip -d geist-font
+
+# Install the fonts to the system fonts directory
+RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font \
+    && sudo mv geist-font/*.ttf /usr/share/fonts/truetype/geist-font/
+
+# Update the font cache
+RUN sudo fc-cache -fv
+
+# Cleanup unnecessary files
+RUN sudo rm -rf geist-font.zip geist-font
+
 # Copy files: 
-# COPY deploy-container/myTool /home/coder/myTool
+COPY --chown=coder:coder .zshrc /home/coder/.zshrc
+COPY --chown=coder:coder .p10k.zsh /home/coder/.p10k.zsh
 
-# -----------
-
-# Port
+# Set env vars before boot
 ENV PORT=8080
 
 # Use our custom entrypoint script first
