@@ -80,8 +80,8 @@ RUN unzip geist-font.zip -d geist-font
 
 # Install the fonts to the system fonts directory
 RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font \
-    && sudo mv geist-font/GeistMono-1.4.0/statics-ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
-    && sudo mv geist-font/GeistMono-1.4.0/variable-ttf/*.ttf /usr/share/fonts/truetype/geist-font/
+    && sudo mv geist-font/GeistMono/ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
+    && sudo mv geist-font/GeistMono/variable/*.ttf /usr/share/fonts/truetype/geist-font/
 
 # Update the font cache
 RUN sudo fc-cache -fv
