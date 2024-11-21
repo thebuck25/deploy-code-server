@@ -8,10 +8,12 @@ mkdir -p $START_DIR
 
 # function to clone the git repo or add a user's first file if no repo was specified.
 project_init () {
+    echo "GIT_REPOS:${GIT_REPOS}"
     if [ -z "${GIT_REPOS}" ]; then
         echo "[$PREFIX] No GIT_REPOS specified. Creating a default file."
         echo "Example file. Have questions? Join us at https://community.coder.com" > $START_DIR/coder.txt
     else
+        echo "Cloning repositor(y|ies)"
         IFS=' ' read -r -a repos <<< "${GIT_REPOS}"
         for repo in "${repos[@]}"; do
             # Check if GITHUB_PAT is set and use it in the repo URL if available
