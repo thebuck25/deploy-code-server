@@ -68,7 +68,8 @@ else
 
     echo "[$PREFIX] rclone config complete"
     if rclone ls $RCLONE_REMOTE_PATH; then
-        echo "[$PREFIX] remote path has files"
+        echo "[$PREFIX] remote path has files:"
+        rclone ls $RCLONE_REMOTE_PATH
         if [ $RCLONE_AUTO_PULL = "true" ]; then
             # grab the files from the remote instead of running project_init()
             echo "[$PREFIX] Pulling existing files from remote..."
