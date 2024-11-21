@@ -8,12 +8,12 @@ mkdir -p $START_DIR
 
 # function to clone the git repo or add a user's first file if no repo was specified.
 project_init () {
-    echo "GIT_REPOS:${GIT_REPOS}"
+    echo "[$PREFIX] GIT_REPOS:${GIT_REPOS}"
     if [ -z "${GIT_REPOS}" ]; then
         echo "[$PREFIX] No GIT_REPOS specified. Creating a default file."
         echo "Example file. Have questions? Join us at https://community.coder.com" > $START_DIR/coder.txt
     else
-        echo "Cloning repositor(y|ies)"
+        echo "[$PREFIX] Cloning repositor(y|ies)"
         IFS=' ' read -r -a repos <<< "${GIT_REPOS}"
         for repo in "${repos[@]}"; do
             # Check if GITHUB_PAT is set and use it in the repo URL if available
@@ -66,8 +66,9 @@ else
     echo "rclone sync $RCLONE_REMOTE_PATH $RCLONE_SOURCE_PATH $RCLONE_FLAGS -vv" > /home/coder/pull_remote.sh
     chmod +x push_remote.sh pull_remote.sh
 
+    echo "[$PREFIX] rclone config complete"
     if rclone ls $RCLONE_REMOTE_PATH; then
-
+        echo "[$PREFIX] remote path has files"
         if [ $RCLONE_AUTO_PULL = "true" ]; then
             # grab the files from the remote instead of running project_init()
             echo "[$PREFIX] Pulling existing files from remote..."
@@ -78,7 +79,7 @@ else
         fi
 
     else
-
+        echo "[$PREFIX] remote path empty"
         if [ $RCLONE_AUTO_PUSH = "true" ]; then
             # we need to clone the git repo and sync
             echo "[$PREFIX] Pushing initial files to remote..."
