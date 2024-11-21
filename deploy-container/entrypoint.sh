@@ -67,7 +67,7 @@ else
     chmod +x push_remote.sh pull_remote.sh
 
     echo "[$PREFIX] rclone config complete"
-    if rclone ls $RCLONE_REMOTE_PATH; then
+    if [[ $(rclone ls $RCLONE_REMOTE_PATH) ]]; then
         echo "[$PREFIX] remote path has files:"
         rclone ls $RCLONE_REMOTE_PATH
         if [ $RCLONE_AUTO_PULL = "true" ]; then
