@@ -77,6 +77,8 @@ RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/
 
 # Unzip the downloaded file
 RUN unzip geist-font.zip -d geist-font
+RUN ls geist-font
+RUN pwd
 
 # Install the fonts to the system fonts directory
 RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font \
