@@ -1,5 +1,5 @@
 # Start from the code-server Debian base image
-FROM codercom/code-server:4.95.3
+FROM codercom/code-server:4.96.4
 
 USER coder
 
@@ -81,15 +81,24 @@ RUN ls geist-font
 RUN pwd
 
 # Install the fonts to the system fonts directory
-RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font \
-    && sudo mv geist-font/GeistMono-1.4.01/ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
-    && sudo mv geist-font/GeistMono-1.4.01/variable/*.ttf /usr/share/fonts/truetype/geist-font/
+RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font
+# \
+#    && sudo cp ./geist-font/GeistMono-1.4.01/ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
+#    && sudo cp ./geist-font/GeistMono-1.4.01/variable/*.ttf /usr/share/fonts/truetype/geist-font/
+RUN find geist-font/ -type f -name '*.ttf' -exec cp '{}' /usr/share/fonts/truetype/geist-font/ ';'
 
 # Update the font cache
 RUN sudo fc-cache -fv
 
 # Cleanup unnecessary files
 RUN sudo rm -rf geist-font.zip geist-font
+
+# Install Terraform
+RUN sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+RUN sudo apt update
+RUN sudo apt-get install terraform
 
 # Copy files: 
 COPY --chown=coder:coder .zshrc /home/coder/.zshrc
