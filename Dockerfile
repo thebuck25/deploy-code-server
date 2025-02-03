@@ -78,9 +78,10 @@ ENV NODE_VERSION --lts
 RUN sudo mkdir -p /usr/local/nvm
 RUN sudo chown -R coder:coder /usr/local/nvm
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+RUN source $NVM_DIR/nvm.sh
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
+RUN nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION
 
 # Fetch the latest Geist font release
 RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/releases/latest | grep "browser_download_url" | grep ".zip" | cut -d '"' -f 4 | grep Mono) \
@@ -96,7 +97,7 @@ RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font
 # \
 #    && sudo cp ./geist-font/GeistMono-1.4.01/ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
 #    && sudo cp ./geist-font/GeistMono-1.4.01/variable/*.ttf /usr/share/fonts/truetype/geist-font/
-RUN find geist-font/ -type f -name '*.ttf' -exec cp '{}' /usr/share/fonts/truetype/geist-font/ ';'
+RUN sudo find geist-font/ -type f -name '*.ttf' -exec cp '{}' /usr/share/fonts/truetype/geist-font/ ';'
 
 # Update the font cache
 RUN sudo fc-cache -fv
