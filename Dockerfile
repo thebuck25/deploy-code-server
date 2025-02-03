@@ -83,13 +83,8 @@ RUN sudo mkdir -p /usr/local/nvm
 RUN sudo chown -R coder:coder /usr/local/nvm
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 RUN /bin/bash -c "source $NVM_DIR/nvm.sh"
-RUN /bin/bash -c "source /home/coder/.zshrc"
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
-RUN [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-RUN [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
-RUN nvm install $NODE_VERSION
-RUN nvm use --delete-prefix --lts
 
 # Fetch the latest Geist font release
 RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/releases/latest | grep "browser_download_url" | grep ".zip" | cut -d '"' -f 4 | grep Mono) \
