@@ -95,9 +95,6 @@ RUN pwd
 
 # Install the fonts to the system fonts directory
 RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font
-# \
-#    && sudo cp ./geist-font/GeistMono-1.4.01/ttf/*.ttf /usr/share/fonts/truetype/geist-font/ \
-#    && sudo cp ./geist-font/GeistMono-1.4.01/variable/*.ttf /usr/share/fonts/truetype/geist-font/
 RUN sudo find geist-font/ -type f -name '*.ttf' -exec cp '{}' /usr/share/fonts/truetype/geist-font/ ';'
 
 # Update the font cache
