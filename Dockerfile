@@ -81,7 +81,8 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | 
 RUN /bin/bash -c "source $NVM_DIR/nvm.sh"
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
-RUN nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION
+RUN /bin/bash -c "nvm install $NODE_VERSION"
+RUN /bin/bash -c "nvm use --delete-prefix $NODE_VERSION"
 
 # Fetch the latest Geist font release
 RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/releases/latest | grep "browser_download_url" | grep ".zip" | cut -d '"' -f 4 | grep Mono) \
