@@ -22,6 +22,18 @@ RUN sudo chown -R coder:coder /home/coder/.local
 # Install AzCLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
+# Install Terraform
+RUN sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+RUN sudo apt update
+RUN sudo apt-get install terraform
+
+# Install AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+RUN unzip awscliv2.zip
+RUN sudo ./aws/install
+
 # Install VS Code extensions:
 # Note: we use a different marketplace than VS Code. See https://github.com/cdr/code-server/blob/main/docs/FAQ.md#differences-compared-to-vs-code
 # First copy any manually installed extensions to docker
@@ -31,13 +43,12 @@ RUN code-server --install-extension esbenp.prettier-vscode
 RUN code-server --install-extension ms-vscode.vscode-typescript-next
 RUN code-server --install-extension ms-vscode.azure-account
 RUN code-server --install-extension ms-azuretools.vscode-azurefunctions
-RUN code-server --install-extension hashicorp.terraform
-#RUN code-server --install-extension mongodb.mongodb-vscode
+RUN code-server --install-extension HashiCorp.terraform
 RUN code-server --install-extension GitHub.vscode-github-actions
 RUN code-server --install-extension github.github-vscode-theme
 RUN code-server --install-extension GitHub.vscode-pull-request-github
-#RUN code-server --install-extension ms-kubernetes-tools.vscode-kubernetes-tools
-#RUN code-server --install-extension shd101wyy.markdown-preview-enhanced
+RUN code-server --install-extension AmazonWebServices.amazon-q-vscode
+Run code-server --install-extension AmazonWebServices.aws-toolkit-vscode
 
 #Manual install
 ENV EXTENSIONS_DIR=.local/share/code-server/extensions
@@ -92,13 +103,6 @@ RUN sudo fc-cache -fv
 
 # Cleanup unnecessary files
 RUN sudo rm -rf geist-font.zip geist-font
-
-# Install Terraform
-RUN sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-RUN wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
-RUN echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-RUN sudo apt update
-RUN sudo apt-get install terraform
 
 # Copy files: 
 COPY --chown=coder:coder .zshrc /home/coder/.zshrc
