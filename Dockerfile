@@ -48,7 +48,7 @@ RUN code-server --install-extension GitHub.vscode-github-actions
 RUN code-server --install-extension github.github-vscode-theme
 RUN code-server --install-extension GitHub.vscode-pull-request-github
 RUN code-server --install-extension AmazonWebServices.amazon-q-vscode
-Run code-server --install-extension AmazonWebServices.aws-toolkit-vscode
+RUN code-server --install-extension AmazonWebServices.aws-toolkit-vscode
 
 #Manual install
 ENV EXTENSIONS_DIR=.local/share/code-server/extensions
