@@ -72,6 +72,10 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 # Change the default shell for "coder" to zsh
 RUN ZSH_PATH=$(which zsh) && sudo sed -i "s|/bin/bash|${ZSH_PATH}|" /etc/passwd
 
+# Copy ZSH files: 
+COPY --chown=coder:coder .zshrc /home/coder/.zshrc
+COPY --chown=coder:coder .p10k.zsh /home/coder/.p10k.zsh
+
 # Setup NVM
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION --lts
@@ -79,6 +83,7 @@ RUN sudo mkdir -p /usr/local/nvm
 RUN sudo chown -R coder:coder /usr/local/nvm
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 RUN /bin/bash -c "source $NVM_DIR/nvm.sh"
+RUN /bin/bash -c "source /home/coder/.zshrc"
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
 RUN [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -104,10 +109,6 @@ RUN sudo fc-cache -fv
 
 # Cleanup unnecessary files
 RUN sudo rm -rf geist-font.zip geist-font
-
-# Copy files: 
-COPY --chown=coder:coder .zshrc /home/coder/.zshrc
-COPY --chown=coder:coder .p10k.zsh /home/coder/.p10k.zsh
 
 # Set env vars before boot
 ENV PORT=8080
