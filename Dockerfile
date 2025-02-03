@@ -78,7 +78,7 @@ ENV NODE_VERSION --lts
 RUN sudo mkdir -p /usr/local/nvm
 RUN sudo chown -R coder:coder /usr/local/nvm
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-RUN source $NVM_DIR/nvm.sh
+RUN /bin/bash -c "source $NVM_DIR/nvm.sh"
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
 ENV PATH $NODE_PATH:$PATH
 RUN nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION
