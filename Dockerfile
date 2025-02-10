@@ -76,7 +76,7 @@ RUN ZSH_PATH=$(which zsh) && sudo sed -i "s|/bin/bash|${ZSH_PATH}|" /etc/passwd
 COPY --chown=coder:coder .zshrc /home/coder/.zshrc
 COPY --chown=coder:coder .p10k.zsh /home/coder/.p10k.zsh
 
-# Setup NVM
+# Setup NVM:
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION --lts
 RUN sudo mkdir -p /usr/local/nvm
