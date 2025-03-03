@@ -69,7 +69,7 @@ RUN sudo apt-get install -y inotify-tools
 
 # Setup NVM:
 # Create a script file sourced by both interactive and non-interactive bash shells
-ENV BASH_ENV /home/user/.bash_env
+ENV BASH_ENV /home/coder/.bash_env
 # Setup NVM:
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION --lts
