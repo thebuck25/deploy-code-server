@@ -71,13 +71,15 @@ RUN sudo apt-get install -y inotify-tools
 # Create a script file sourced by both interactive and non-interactive bash shells
 ENV BASH_ENV /home/coder/.bash_env
 # Setup NVM:
+RUN mkdir -p /usr/local/nvm
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION --lts
 RUN touch "${BASH_ENV}"
 RUN echo '. "${BASH_ENV}"' >> ~/.bashrc
+RUN cat ~/.bashrc
 
 # Download and install nvm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | PROFILE="${BASH_ENV}" bash
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | PROFILE="/home/coder/.bash_env" bash
 RUN echo node > .nvmrc
 RUN nvm install
 
