@@ -67,6 +67,20 @@ RUN sudo apt-get install -y build-essential libssl-dev
 RUN sudo apt-get install -y wget unzip fontconfig
 RUN sudo apt-get install -y inotify-tools
 
+# Setup NVM:
+# Create a script file sourced by both interactive and non-interactive bash shells
+ENV BASH_ENV /home/user/.bash_env
+# Setup NVM:
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION --lts
+RUN touch "${BASH_ENV}"
+RUN echo '. "${BASH_ENV}"' >> ~/.bashrc
+
+# Download and install nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | PROFILE="${BASH_ENV}" bash
+RUN echo node > .nvmrc
+RUN nvm install
+
 # Setup shell w/ powerline10k theme, no zsh plugins installed
 RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/v1.2.0/zsh-in-docker.sh)"
 # Change the default shell for "coder" to zsh
@@ -77,13 +91,13 @@ COPY --chown=coder:coder .zshrc /home/coder/.zshrc
 COPY --chown=coder:coder .p10k.zsh /home/coder/.p10k.zsh
 
 # Setup NVM:
-ENV NVM_DIR /usr/local/nvm
-ENV NODE_VERSION --lts
-RUN sudo mkdir -p /usr/local/nvm
-RUN sudo chown -R coder:coder /usr/local/nvm
-RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
-ENV PATH $NODE_PATH:$PATH
+#ENV NVM_DIR /usr/local/nvm
+#ENV NODE_VERSION --lts
+#RUN sudo mkdir -p /usr/local/nvm
+#RUN sudo chown -R coder:coder /usr/local/nvm
+#RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+#ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
+#ENV PATH $NODE_PATH:$PATH
 
 # Fetch the latest Geist font release
 RUN LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/vercel/geist-font/releases/latest | grep "browser_download_url" | grep ".zip" | cut -d '"' -f 4 | grep Mono) \
@@ -98,11 +112,22 @@ RUN pwd
 RUN sudo mkdir -p /usr/share/fonts/truetype/geist-font
 RUN sudo find geist-font/ -type f -name '*.ttf' -exec cp '{}' /usr/share/fonts/truetype/geist-font/ ';'
 
+# Install Meslo fonts for p10k
+RUN wget -O https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Regular.ttf
+RUN wget -O https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold.ttf
+RUN wget -O https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Italic.ttf
+RUN wget -O https://github.com/romkatv/powerlevel10k-media/raw/master/MesloLGS%20NF%20Bold%20Italic.ttf
+
+# Install the fonts to the system fonts directory
+RUN sudo mkdir -p /usr/share/fonts/truetype/meslolgs
+RUN sudo find ./ -type f -name '*.ttf' -exec cp '{}' /usr/share/fonts/truetype/meslolgs/ ';'
+
 # Update the font cache
 RUN sudo fc-cache -fv
 
 # Cleanup unnecessary files
 RUN sudo rm -rf geist-font.zip geist-font
+RUN sudo rm *.ttf
 
 # Set env vars before boot
 ENV PORT=8080
