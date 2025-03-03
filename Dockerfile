@@ -73,6 +73,7 @@ ENV BASH_ENV /home/coder/.bash_env
 # Setup NVM:
 RUN sudo mkdir -p /usr/local/nvm
 ENV NVM_DIR /usr/local/nvm
+RUN chown -R coder:coder /usr/local/nvm
 ENV NODE_VERSION --lts
 RUN touch "${BASH_ENV}"
 RUN echo '. "${BASH_ENV}"' >> ~/.bashrc
