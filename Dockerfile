@@ -71,7 +71,7 @@ RUN sudo apt-get install -y inotify-tools
 # Create a script file sourced by both interactive and non-interactive bash shells
 ENV BASH_ENV /home/coder/.bash_env
 # Setup NVM:
-RUN mkdir -p /usr/local/nvm
+RUN sudo mkdir -p /usr/local/nvm
 ENV NVM_DIR /usr/local/nvm
 ENV NODE_VERSION --lts
 RUN touch "${BASH_ENV}"
